@@ -45,34 +45,37 @@ def linear_finder(array, start, end, value, cmp, step):
 def sort_insertion(array, cmp=less, first_not_of_finder=linear_finder, start=0, step=1):
 	n = len(array)
 	for i in range(start + step, n, step):
-		cur_item = copy.copy(array[i])
-		ins_pos = first_not_of_finder(array, start, i, cur_item, cmp, step)
-		for j in range(i, ins_pos, -step):
+		cur_item = array[i]
+		j = i
+		while (j >= step) and not cmp(array[j-step], cur_item):
 			array[j] = array[j-step]
-		array[ins_pos] = cur_item
+			j -= step
+		array[j] = cur_item
 
 	return array
 
 
-def sort_shell(array, cmp=less, d=10):
+def sort_shell(array, cmp=less):
 	n = len(array)
-	for i in range(0, d):
-		sort_insertion(array, cmp=cmp, start=i, step=d)
-	sort_insertion(array, cmp)
+	d = n // 2
+	while d >= 1:
+		array = sort_insertion(array, cmp=cmp, step=d)
+		d = d // 2
 	return array
 
 
+#t=time.time()
+#sort_shell(random_array(100))
+#print(time.time()-t)
+
+array = random_array(10000)
 t=time.time()
-sort_shell(random_array(100))
+array = sort_shell(array)
 print(time.time()-t)
 
-t=time.time()
-sort_shell(random_array(1000))
-print(time.time()-t)
-
-t=time.time()
-sort_shell(random_array(10000))
-print(time.time()-t)
+# t=time.time()
+# sort_shell(random_array(10000))
+# print(time.time()-t)
 
 
 #print(sort_bubble([]))
